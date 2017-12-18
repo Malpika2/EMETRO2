@@ -530,12 +530,11 @@ class mSolicitud extends CI_Model
 		return $result;
 	}
 	public function getSolicitudesPagado(){
-	// $query_solicitud = "SELECT * FROM solicitud where pagado_fecha is not null ORDER BY fecha DESC";
-	// $query_operador = "SELECT * FROM operador where idoperador='".$row_solicitud['idoperador']."'";
 		$this->db->SELECT('*');
 		$this->db->from('solicitud');
 		$this->db->where('pagado_fecha!=',null);
 		$this->db->join('operador', 'operador.idoperador = solicitud.idoperador');
+		$this->db->order_by('fecha','DESC');
 		$r = $this->db->get();
 		$result = $r->result();
 		return $result;
