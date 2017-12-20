@@ -16,4 +16,11 @@ class mInspeccion_accion_correctiva_previa extends CI_model
 		$result = $r->result();
 		return $result;
 	}
+	public function update_local($data){
+		$datos = array(
+			'situacion_encontrada' => $data['situacion_encontrada']
+		);
+		$this->emetro_local->where('idinspeccion_accion_correctiva_previa',$data['idinspeccion_accion_correctiva_previa']);
+		$this->emetro_local->update('inspeccion_accion_correctiva_previa',$datos);
+	}
 }

@@ -21,8 +21,47 @@
 			$data['idSolicitud']=$idSolicitud;
 			$data['row_inspeccion_reporte_pregunta'] = $row_inspeccion_reporte_pregunta;
 			$this->load->view('Inspector/vHeader');
+			$this->load->view('Inspector/vMenu');
 			$this->load->view('Inspector/Inspeccion/vReporte_ins',$data);
 			$this->load->view('Inspector/vFooter');
+		}
+		public function guardar_pregunta2Observacion(){
+			$data['idsolicitud'] = $this->input->post('idsolicitud');
+			$data['idinspeccion_reporte_pregunta'] = $this->input->post('idinspeccion_reporte_pregunta');
+			$data['observacion'] = $this->input->post('observacion');
+			$this->mInspeccion_reporte_respuesta->updateObservacion($data);
+		}
+		public function guardar_pregunta2(){
+			if (null!==$this->input->post('idinspeccion_reporte_pregunta')) {
+
+				$data['idsolicitud'] = $this->input->post('idsolicitud');
+				$data['idinspeccion_reporte_pregunta'] = $this->input->post('idinspeccion_reporte_pregunta');
+				$totalR = $this->mInspeccion_reporte_respuesta->numTotal($data);
+				if ($totalR==0) {
+
+				echo "<script>console.log( 'totalR: " . $totalR . "' );</script>";
+
+					$data['idinspeccion_reporte_pregunta'] = $this->input->post('idinspeccion_reporte_pregunta');
+					$data['idsolicitud'] = $this->input->post('idsolicitud');
+					$data['respuesta'] = $this->input->post('respuesta');
+					$data['observacion'] = $this->input->post('observacion');
+					$this->mInspeccion_reporte_respuesta->insert_local($data);
+				}else{
+					echo "<script>console.log( 'totalR: " . $totalR . "' );</script>";
+					$data['idinspeccion_reporte_pregunta'] = $this->input->post('idinspeccion_reporte_pregunta');
+					$data['idsolicitud'] = $this->input->post('idsolicitud');
+					$data['respuesta'] = $this->input->post('respuesta');
+					$data['observacion'] = $this->input->post('observacion');
+
+					$this->mInspeccion_reporte_respuesta->update_local($data);
+				}
+			}
+			if (null!==$this->input->post('update_accion_correctiva')) {
+				$data['situacion_encontrada'] = $this->input->post('situacion_encontrada');
+				$data['idinspeccion_accion_correctiva_previa'] = $this->input->post('idinspeccion_accion_correctiva_previa');
+				$this->mInspeccion_accion_correctiva_previa->update_local($data);
+				 
+			}
 		}
 	}
 ?>

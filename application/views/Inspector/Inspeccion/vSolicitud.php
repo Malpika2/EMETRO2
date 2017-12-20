@@ -1,20 +1,8 @@
-<div class="container-fluid">
-    <div class="row">
-      <div class="col-sm-12  col-md-12 main">
-        <form method="post" action="<?php echo base_url('inspector'); ?>">
-          <button type="submit" class="btn btn-success">INICIO</button>
-        </form>
-          <h1 class="page-header">Metrocert Movil</h1>
-  <iframe width="1" height="1" name="destino" frameborder="0"></iframe>
-
-<?php /*
-<div class="col-lg-12" id="indicaciones">
-<p class="lead">
-Escribe en los campos sombreados en Rojo la información que se te pide
-</p>
-</div>
-*/ ?>
 <div id="cuerpo" class="col-lg-10" >
+  <h1 class="page-header">Inspección</h1>
+  <form method="post" action="<?php echo base_url('inspector'); ?>">
+      <button type="submit" class="btn btn-primary">Ver Todas</button>
+  </form><br>
   <h3>Orden de inspección</h3>
   <div class="panel panel-default">
   <div class="panel-heading" align="center">
@@ -26,7 +14,7 @@ Escribe en los campos sombreados en Rojo la información que se te pide
 
   <div class="col-lg-6 alert alert-warning">
   Fecha: <strong><?php echo htmlentities(date('d-m-Y',$row_solicitud->fecha), ENT_COMPAT, 'UTF-8'); ?><br />
-  <input name="solicitud_tipo" type="text" value="<?php echo htmlentities($row_solicitud->solicitud_tipo, ENT_COMPAT, 'UTF-8'); ?>" readonly="readonly" />
+  <input class="form-control" name="solicitud_tipo" type="text" value="<?php echo htmlentities($row_solicitud->solicitud_tipo, ENT_COMPAT, 'UTF-8'); ?>" readonly="readonly" />
   </strong>
   </div>
   <div class="col-lg-6 alert alert-warning">
@@ -247,8 +235,8 @@ foreach ($row_producto as $producto) {
   <td>
 <?php
   foreach ($row_unidades as $unidades) {
-    if ($row_producto->idunidad_produccion===$row_unidades->idunidad_produccion){
-       echo $row_unidades['unidad_produccion'];
+    if ($producto->idunidad_produccion===$unidades->idunidad_produccion){
+       echo $unidades->unidad_produccion;
     }
   }
 ?>
@@ -374,13 +362,13 @@ foreach ($row_procesos as $procesos) {
     </div>
     <div class="panel-body">
     <table class="table lead">
-<form action="#firma" method="post" >
+<form id="form_firma" action="<?php echo base_url('Inspector/Solicitud/firmar_solicitud') ?>" method="post" >
 <tr>
 <td>
-<input <?php  if(strlen($row_solicitud->firma_nombre)>0){?> disabled="disabled" <?php  }?>placeholder="Escriba el nombre de la persona que envía la solicitud" class="form-control" type="text" name="firma_nombre" value="<?php  echo $row_solicitud->firma_nombre;?>" />
+<input <?php  if(strlen($row_solicitud->firma_nombre)>0){?> disabled="disabled" <?php  }?>placeholder="Escriba el nombre de la persona que envía la solicitud" class="form-control" type="text" id="firma_nombre" name="firma_nombre" value="<?php  echo $row_solicitud->firma_nombre;?>" />
 </td>
 <td>
-<input disabled="disabled" class="form-control" type="text" name="firma_fecha" value="<?php  if($row_solicitud->firma_fecha>0){echo date("Y-m-d",$row_solicitud->firma_fecha);}?>" />
+<input disabled="disabled" class="form-control" type="text" id="firma_fecha" name="firma_fecha" value="<?php  if($row_solicitud->firma_fecha>0){echo date("Y-m-d",$row_solicitud->firma_fecha);}?>" />
 </td>
 <td>
 <input type="hidden" name="idsolicitud" value="<?php  echo $row_solicitud->idsolicitud; ?>" />
@@ -401,7 +389,7 @@ foreach ($row_procesos as $procesos) {
     </div>
     <div class="panel-body">
     <table class="table lead">
-<form action="#revision" method="post" >
+<form id="form_revision_solicitud" action="<?php echo  base_url('Inspector/Solicitud/revision_solicitud'); ?>" method="post" >
 <tr>
 <td>
 <input  disabled="disabled" placeholder="Nombre" class="form-control" type="text" name="revision_nombre" value="<?php  echo $row_solicitud->revision_nombre;?>" />
@@ -413,9 +401,10 @@ foreach ($row_procesos as $procesos) {
 <input type="hidden" name="idsolicitud" value="<?php  echo $row_solicitud->idsolicitud; ?>" />
 <input type="hidden" name="section_post" value="update" />
 <input type="hidden" name="revision_solicitud" value="1" />
-<input class="form-control btn btn-success" type="submit" <?php if(strlen($row_solicitud->revision_nombre)>0){?> disabled="disabled" <?php  }?> value="Guardar" />
+
+<input id="inputSubmitForm" name="inputSubmitForm" class="form-control btn btn-success" type="submit" <?php if(strlen($row_solicitud->revision_nombre)>0){?> disabled="disabled" <?php  }?> value="Guardar" />
 </td>
-</tr>
+</tr><label id="MensajeGuardado" class="h5"></label>
 </form>
     </table>
     </div>
