@@ -113,9 +113,40 @@ foreach ($row_inspeccion_reporte_pregunta as $inspeccion_reporte_pregunta){
 <?php } ?>
 </tbody>
 </table>
+<div class="panel panel-info">
+    <div class="panel-heading">
+        <h3 class="panel-title">FIRMA DE SOLICITUD - INSPECTOR</h3>
+    </div>
+    <div class="panel-body">
+    <table class="table lead">
+    <?php if ($row_firma!==null){?>
+    <tr>
+      <td>
+        <input <?php  if($row_firma!==null){ ?> disabled="disabled" <?php } ?> placeholder="Escriba el nombre de la persona que envía la solicitud" class="form-control" type="text" id="firma_nombre" name="firma_nombre" value="<?php  echo $_SESSION['MM_Username'];?>" />
+      </td>
+      <td>
+        <input disabled="disabled" class="form-control" type="text" id="firma_fecha" name="firma_fecha" value="<?php  if($row_firma!==null){echo date("Y-m-d",$row_firma->fecha_firma);}?>" />
+      </td>
+    </tr>
+    <tr>
+      <td colspan="3"> 
+          <img class="img-responsive" src="<?php echo base_url($row_firma->url_firma);?>.png" alt="imagen-firma">
+      </td> 
+    </tr>
+    <?php } else {?>
+    <tr>
+      <td>
+        <div class="alert alert-danger" role="alert">
+            <small>Sin firmar</small>
+        </div>
+      </td>
+    </tr>
+    <?php }?>
+</table>
+    </div>
+    </div>
 </div>
 </div>
-
 
 
 

@@ -17,6 +17,7 @@ class inspecciones extends CI_Controller
 		$this->load->model('Inspector/mProceso');
 		$this->load->model('Inspector/mInspeccion_indicacion');
 		$this->load->model('Inspector/mInspeccion_accion_correctiva_previa');
+		$this->load->model('Inspector/mFirmas_Inspector');
 
 	}
 	public function index(){
@@ -46,6 +47,7 @@ class inspecciones extends CI_Controller
 		$data['row_solicitud'] = $row_solicitud;
 		$data['row_inspeccion'] = $row_inspeccion;
 		$data['row_orden_inspeccion'] = $this->mOrdenInspeccion->getOrdenInspeccion($idsolicitud);
+		$data['row_firma'] = $this->mFirmas_Inspector->getFirmasOrdenInspeccion($idsolicitud);
 
 		foreach ($row_inspeccion as $inspeccion){
 			$data['row_inspector'][$inspeccion->idinspeccion] = $this->mInspector->getInspector($inspeccion->idinspector);

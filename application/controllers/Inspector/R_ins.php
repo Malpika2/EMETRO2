@@ -9,6 +9,8 @@
 			$this->load->model('Inspector/mInspeccion_reporte_pregunta');
 			$this->load->model('Inspector/mInspeccion_reporte_respuesta');
 			$this->load->model('Inspector/mInspeccion_accion_correctiva_previa');
+			$this->load->model('Inspector/mFirmas_Inspector');
+
 		}
 		public function index(){
 			$row_inspeccion_reporte_pregunta = $this->mInspeccion_reporte_pregunta->getinspeccion_reporte_pregunta();
@@ -20,6 +22,8 @@
 			$data['row_inspeccion_accion_correctiva_previa'] = $this->mInspeccion_accion_correctiva_previa->getAcc_Cor_Prev($idSolicitud);
 			$data['idSolicitud']=$idSolicitud;
 			$data['row_inspeccion_reporte_pregunta'] = $row_inspeccion_reporte_pregunta;
+			$data['row_firma'] = $this->mFirmas_Inspector->getFirmasR_ins($idSolicitud);
+
 			$this->load->view('Inspector/vHeader');
 			$this->load->view('Inspector/vMenu');
 			$this->load->view('Inspector/Inspeccion/vReporte_ins',$data);

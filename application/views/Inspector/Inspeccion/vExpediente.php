@@ -16,7 +16,7 @@
       	<thead>
 		<tr>
 			<form action="<?php echo base_url('Inspector/Expediente'); ?>" method="post" enctype="multipart/form-data" >
-			<th colspan="2" valign="top">Expediente detalle - Agregar archivo:<?php echo "<small'>".$mensajeUpload."</small>"; ?></small></th>
+			<th colspan="2" valign="top">Expediente detalle - Agregar archivo:<?php echo "<small>".$mensajeUpload."</small>"; ?></small></th>
 			<tr>
 				<th valign="top">	
 					<input type="hidden" name="upload_expediente_detalle" value="1" />
