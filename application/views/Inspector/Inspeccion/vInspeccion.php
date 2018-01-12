@@ -1,12 +1,8 @@
-<div class="container-fluid">
-    <div class="row">
-      <div class="col-sm-12  col-md-12 main">
-        <form method="post" action="<?php echo base_url('inspector'); ?>">
-          <button type="submit" class="btn btn-success">INICIO</button>
-        </form>
-          <h1 class="page-header">Metrocert Movil</h1>
-
 <div id="cuerpo" class="col-lg-10" >
+  <h1 class="page-header">Inspección</h1>
+  <form method="post" action="<?php echo base_url('inspector'); ?>">
+      <button type="submit" class="btn btn-primary">Ver Todas</button>
+  </form><br>
   
   <div class="panel panel-default">
   <div class="panel-heading" align="center">
@@ -403,7 +399,7 @@ foreach ($row_inspeccion_accion_correctiva_previa as $accionCorrectiva) {
     </div>
     <div class="panel-body">
     <table class="table lead">
-<form action="#revision" method="post" >
+<form id="form_autorizacion_orden" action="<?php echo base_url('Inspector/Inspecciones/autorizacion_orden'); ?>" method="post" >
 <tr>
 <td>
 <input  disabled="disabled" placeholder="Nombre" class="form-control" type="text" name="autorizacion_nombre" value="<?php  echo $row_orden_inspeccion->autorizacion_nombre;?>" />
@@ -415,11 +411,43 @@ foreach ($row_inspeccion_accion_correctiva_previa as $accionCorrectiva) {
 <input type="hidden" name="idsolicitud" value="<?php  echo $row_solicitud->idsolicitud; ?>" />
 <input type="hidden" name="section_post" value="update" />
 <input type="hidden" name="autorizacion_orden" value="1" />
-<input class="form-control btn btn-success" type="submit" <?php   if(strlen($row_orden_inspeccion->autorizacion_nombre)>0){?> disabled="disabled" <?php  }?> value="Autorizar" />
+<input id="btn_Autorizar" class="form-control btn btn-success" type="submit" <?php   if(strlen($row_orden_inspeccion->autorizacion_nombre)>0){?> disabled="disabled" <?php  }?> value="Autorizar" />
 </td>
 </tr>
 </form>
     </table>
+    </div>
+    </div>
+<div class="panel panel-info">
+    <div class="panel-heading">
+        <h3 class="panel-title">FIRMA DE SOLICITUD - INSPECTOR</h3>
+    </div>
+    <div class="panel-body">
+    <table class="table lead">
+    <?php if ($row_firma!==null){?>
+    <tr>
+      <td>
+        <input <?php  if($row_firma!==null){ ?> disabled="disabled" <?php } ?> placeholder="Escriba el nombre de la persona que envía la solicitud" class="form-control" type="text" id="firma_nombre" name="firma_nombre" value="<?php  echo $_SESSION['MM_Username'];?>" />
+      </td>
+      <td>
+        <input disabled="disabled" class="form-control" type="text" id="firma_fecha" name="firma_fecha" value="<?php  if($row_firma!==null){echo date("Y-m-d",$row_firma->fecha_firma);}?>" />
+      </td>
+    </tr>
+    <tr>
+      <td colspan="3"> 
+          <img class="img-responsive" src="<?php echo base_url($row_firma->url_firma);?>.png" alt="imagen-firma">
+      </td> 
+    </tr>
+    <?php } else {?>
+    <tr>
+      <td>
+        <div class="alert alert-danger" role="alert">
+            <small>Sin firmar</small>
+        </div>
+      </td>
+    </tr>
+    <?php }?>
+</table>
     </div>
     </div>
       </div>

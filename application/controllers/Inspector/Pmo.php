@@ -24,6 +24,7 @@ class pmo extends CI_Controller
 
 
 		$this->load->view('Inspector/vHeader');
+		$this->load->view('Inspector/vMenu');
 		$this->load->view('Inspector/Inspeccion/vPmo',$data);
 		$this->load->view('Inspector/vFooter');
 	}

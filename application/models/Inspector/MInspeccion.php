@@ -12,6 +12,7 @@ class mInspeccion extends CI_Model
 		$this->emetro_local->SELECT('*');
 		$this->emetro_local->FROM('inspeccion');
 		$this->emetro_local->where('idsolicitud',$idsolicitud);
+		$this->emetro_local->join('inspector','inspector.idinspector = inspeccion.idinspector');
 		$r = $this->emetro_local->get();
 		$result = $r->result();
 		return $result;

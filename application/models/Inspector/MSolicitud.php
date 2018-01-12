@@ -530,14 +530,32 @@ class mSolicitud extends CI_Model
 		return $result;
 	}
 	public function getSolicitudesPagado(){
-	// $query_solicitud = "SELECT * FROM solicitud where pagado_fecha is not null ORDER BY fecha DESC";
-	// $query_operador = "SELECT * FROM operador where idoperador='".$row_solicitud['idoperador']."'";
 		$this->db->SELECT('*');
 		$this->db->from('solicitud');
 		$this->db->where('pagado_fecha!=',null);
 		$this->db->join('operador', 'operador.idoperador = solicitud.idoperador');
+		$this->db->order_by('fecha','DESC');
 		$r = $this->db->get();
 		$result = $r->result();
 		return $result;
+	}
+	public function updateSolicitud($idsolicitud,$firma_nombre){
+		$data = array(
+			'firma_nombre'=>$firma_nombre,
+			'firma_fecha' => time());
+		$this->emetro_local->where('idsolicitud',$idsolicitud);
+		$this->emetro_local->update('solicitud',$data);
+	}
+	public function revision_solicitud($idsolicitud){
+	$this->emetro_local->select('*');
+	$this->emetro_local->from('inspector');
+	$this->emetro_local->where('usuario',$this->session->userdata('MM_Username'));
+	$r = $this->emetro_local->get();
+	$usuario = $r->row();
+	$data = array(
+			'revision_nombre' => $usuario->nombre.' '.$usuario->apellido,
+			'revision_fecha' => time());
+	$this->emetro_local->where('idsolicitud',$idsolicitud);
+	$this->emetro_local->update('solicitud',$data);
 	}
 }
