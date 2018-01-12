@@ -11,35 +11,60 @@ class mMapa extends CI_Model
 
 	public function grabar_punto($param)
 	{
-		$campos = array(
+		$data = array(			
 			'titulo' => $param['titulo'],
 			'descripcion' => $param['descripcion'],
 			'cx' => $param['cx'],
 			'cy' => $param['cy'],
-		
+			'idsolicitud' => $param['idsolicitud'],
+			'referencias' => $param['referencias'],		
 		);
-		
-		$this->db->insert('mapa',$campos);		
-		return 1;
+		$this->db->set('fecharegistro', 'NOW()', FALSE);						
+		$this->db->insert('mapa',$data);
+
+
+		return $this->db->insert_id();
 	}
 
-	public function ver_punto()
+	public function guardar_imagen($param)
+	{
+		 $arrayCampos = array(
+		 	'idpunto' => $param['idpunto'],
+		 	'file_name' => $param['file_name'],
+		 	'idsolicitud' => $param['idsolicitud'],
+		);
+		$this->db->insert('fotos',$arrayCampos); 
+	}
+
+	
+
+	public function ver_punto($param)
 	{
 		$this->db->select("*");
-		$this->db->from("mapa");
+		$this->db->from("mapa ");
+	
+		$this->db->where("idsolicitud", $param['solicitud']);			
 
 		$r = $this->db->get();
 
 		return $r->result();
 	}
 
-	public function ver_marcador()
+	public function ver_fotos($param)
 	{
-		$this->db->select("*");
-		$this->db->from("mapa");
+		$this->db->select('*');
+	    $this->db->from('fotos');
+	    $this->db->where('idsolicitud', $param['idsolicitud']);
+	    $query = $this->db->get();
+	    $result = $query->result_array();
+	    return !empty($result);
+    }
 
-		$r = $this->db->get();
+	 public function insert($data = array())
+	 {
+        $insert = $this->db->insert_batch('fotos',$data);
+        return $insert?true:false;
+    }
 
-		return $r->result();
-	}
+	
 }
