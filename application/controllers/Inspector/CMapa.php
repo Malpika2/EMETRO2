@@ -16,6 +16,7 @@ class cMapa extends CI_Controller
 	{
 		
 		$data['solicitud'] = $this->input->post('idsolicitud');
+		$data['punto'] = $this->input->post('modal-idpunto');
 		$data['row_puntos'] = $this->mMapa->ver_punto($data);
 		$data['row_fotos'] = $this->mMapa->ver_fotos($data);
 		$this->load->view('Inspector/vHeader');
@@ -25,23 +26,55 @@ class cMapa extends CI_Controller
 	}
 	public function grabar_punto()
 	{	
-		$param['idsolicitud'] = $this->input->post('idsolicitud');
+		
+                   
+        $param['idsolicitud'] = $this->input->post('idsolicitud');
 		$param['titulo'] = $this->input->post('titulo');
 		$param['descripcion'] = $this->input->post('descripcion');
 		$param['cx'] = $this->input->post('cx');
 		$param['cy'] = $this->input->post('cy');
 		$param['referencias'] = $this->input->post('referencias');
-		$param['file_name'] = $this->input->post('file_name');
-
+        $lastId = $this->mMapa->grabar_punto($param);
+	
 	 	
-	 	$lastId = $this->mMapa->grabar_punto($param);
-
 	 	if($lastId > 0)
 	 	{
-	 		$param['idpunto'] = $lastId;
-	 		$this->mMapa->guardar_imagen($param);
-	 	}
-	}
+	 		$uploadData['idpunto'] = $lastId;
+	 		$data = array();
+			$filesCount = count($_FILES['file_name']['name']);
+            for($i = 0; $i < $filesCount; $i++){
+				$_FILES['file_name']['name'] = $_FILES['file_name']['name'][$i];
+				$_FILES['file_name']['type'] = $_FILES['file_name']['type'][$i];
+				$_FILES['file_name']['size'] = $_FILES['file_name']['size'][$i];
+
+				$uploadPath = 'fotos/';
+	            $config['upload_path'] = $uploadPath;
+	            $config['allowed_types'] = 'gif|jpg|png';
+
+               $this->load->library('upload', $config);
+                if($this->upload->do_upload('file_name'))
+                {
+
+                    $fileData = $this->upload->data();
+
+                    $uploadData[$i]['file_name'] = $fileData['file_name'];
+                    $uploadData[$i]['fecharegistro'] = date("Y-m-d");                                 
+                    $uploadData[$i]['idsolicitud'] = $this->input->post('idsolicitud');
+                }
+            }
+    
+                //se inserta la informacion de los archivos en la base de datos
+                $insert = $this->mMapa->insert($uploadData);
+                $this->index();
+           
+			}
+}
+
+
+
+
+
+
 
 	public function guardar_fotos()
 	{

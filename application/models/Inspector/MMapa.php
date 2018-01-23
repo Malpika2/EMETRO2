@@ -33,6 +33,7 @@ class mMapa extends CI_Model
 		 	'file_name' => $param['file_name'],
 		 	'idsolicitud' => $param['idsolicitud'],
 		);
+		$this->db->set('fecharegistro', 'NOW()', FALSE);
 		$this->db->insert('fotos',$arrayCampos); 
 	}
 
@@ -54,10 +55,11 @@ class mMapa extends CI_Model
 	{
 		$this->db->select('*');
 	    $this->db->from('fotos');
-	    $this->db->where('idsolicitud', $param['idsolicitud']);
+	    $this->db->where( 'idpunto', $param['punto']);
+
 	    $query = $this->db->get();
-	    $result = $query->result_array();
-	    return !empty($result);
+	    $result = $query->result();
+	    return $result;
     }
 
 	 public function insert($data = array())
