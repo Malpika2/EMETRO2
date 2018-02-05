@@ -14,32 +14,34 @@
     }
     #map
     {
-      ;
+      
       width: 1000px;
       height: 600px;
       float:left;
     }
-    
+    #descripcion{
+  font-size: 16px; 
+  font-family: monospace; 
+  height: 15em; 
+  resize: none;
+  word-break: break-all;
+}
+   
   </style>
-  <!-- Bootstrap css-->
-  <!--<link href="<?php echo base_url(); ?>assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">-->
-  <!--datatable-->
+
   <link rel="stylesheet"  href="<?php echo base_url();?>assets/datatables/dataTables.bootstrap.css">
   
   <!-- Bootstrap js-->
   <script src="<?php echo base_url();?>assets/vendors/jquery/dist/jquery.min.js"></script>
-  <!--jquery-->
- <!-- <script src="<?php echo base_url();?>assets/bootstrap/js/bootstrap.min.js"></script>-->
-  <!-- Google Maps-->  
+ 
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCqBKjIObP2dJsSZCMNOSgj_Jy2BGG18DA&callback=initMap">
   </script>
 
   <!--Inicio-->
-   <script >    
+   <script >  
     var map;
     var marcadores_nuevos = [];
     var marcadores_db;
-
 
     //funcion para quitar masrcadores nuevos 
     function quitar_marcadores(lista)
@@ -57,7 +59,7 @@
       var ubicacion = {lat: 17.060628, lng: -96.725366};
       map = new google.maps.Map(document.getElementById('map'), 
       {
-        zoom: 15,
+        zoom: 12,
         center: ubicacion,
         mapTypeId:'roadmap'
       });
@@ -97,22 +99,32 @@
       {        
         if($("#titulo").val()=="")
         {
-          alert("Ingrese un titulo al marcador nuevo...!!!!");
+          $("#titulo").focus().after("<span class='alert alert-danger titulo'><strong>Ingrese Titulo</strong></span>");
+          $("#titulo").mouseleave(function(){
+          $(".titulo").fadeOut(300);
+            });
           return false;
         }
         if($("#descripcion").val()=="")
         {
-          alert("Ingrese la descripción del punto nuevo");
+          $("#descripcion").focus().after("<span class='alert alert-danger descripcion'><strong>Ingrese una Descripción</strong></span>");
+          $("#descripcion").mouseleave(function(){
+            $(".descripcion").fadeOut(300);
+
+          }); 
           return false;
         }
         if($("#referencias").val()=="")
         {
-          alert("Ingrese alguna referencia para el punto nuevo");
+          $("#referencias").focus().after("<span class='alert alert-danger referencias'><strong>Ingrese una Referencia del Lugar</strong></span>");
+          $("#referencias").mouseleave(function(){
+            $(".referencias").fadeOut(300);
+          });
           return false;
         }
         if($("#cx").val()=="")
         {
-          alert("falta marcar un punto dentro del mapa");
+          alert("falta marcar un punto dentro del mapa")
           return false;
         }
         if($("#cy").val()=="")
@@ -120,6 +132,7 @@
           alert("falta marcar un punto dentro del mapa");
           return false;
         }
+
         else
         {
           //se obtienen los datos del formulario y se asignana a las variables.
@@ -152,10 +165,9 @@
         }//fin else
   
       });//fin de la funcion del boton de grabar
+      
+    
        
-  
-
-
   selpunto = function(idpunto, cx, cy, descripcion) 
      { 
        var infowindow = new google.maps.InfoWindow
@@ -173,7 +185,7 @@
             animation: google.maps.Animation.DROP
           });
 
-        google.maps.event.addListener(marca,"click", function(event)
+        google.maps.event.addListener(marca,"click", function()
         {
 
           infowindow.open(map, marca);
@@ -194,11 +206,7 @@
     $("#modal-fecha").val(fecharegistro);
   };
 
- 
-
-
   }//fin de la fincion del mapa.
-
          
   </script>
   <title></title>
@@ -212,9 +220,9 @@
 
 <!--Menu-->
 <p>
-  <a class="btn btn-primary" data-toggle="collapse" href="#multiCollapseExample1" aria-expanded="false" aria-controls="multiCollapseExample1">Agregar Nota</a>
+  <a class="btn btn-info" data-toggle="collapse" href="#multiCollapseExample1" aria-expanded="true" aria-controls="multiCollapseExample1">Agregar Nota</a>
 
-  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2">Mostrar</button>
+  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#multiCollapseExample2" aria-expanded="true" aria-controls="multiCollapseExample2">Mostrar</button>
 
    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#multiCollapseExample3" aria-expanded="false" aria-controls="multiCollapseExample2">Fotos  </button>  
 </p>
@@ -225,23 +233,25 @@
       <div class="card card-body">
 
       <form id="formulario" method="POST" enctype="multipart/form-data">
-      <table>
-        <tr>
-          <td></td>
-          <td>
+      <table class="table" >
+  
+      
+
           <input type="hidden" class="form-control" id="idsolicitud" name="idsolicitud" value="<?php echo $solicitud;?>" aria-describedby="emailHelp" placeholder="Titulo" >
-          </td>
-        </tr>
+      
 
         <tr>
           <td>
         <label for="formGroupExampleInput">Titulo</label>  
         </td>
-          <td>
-          <input type="text" class="form-control" id="titulo" name="titulo" aria-describedby="emailHelp" placeholder="Titulo">
+          <td colspan="12">
+          <input type="text" class="form-control" id="titulo" name="titulo" aria-describedby="emailHelp" placeholder="Titulo">        
+
           </td>
+        
         </tr>
         <tr>
+       
           <td> <label for="formGroupExampleInput">Descripción</label>  </td>
           <td>
            <textarea class="form-control" rows="2" id="descripcion" name="descripcion" required="required" placeholder="Descripción"></textarea>
@@ -260,12 +270,10 @@
               </td>
             </tr>
         
-            <tr>
-              <td>
+           
                 <input type="hidden" class="form-control" id="cx" name="cx">
                 <input type="hidden" class="form-control" id="cy" name="cy"> <br/>
-              </td>
-            </tr>
+         
         
 
             <tr>
@@ -299,9 +307,9 @@
             <tr>
               <td><?php echo $punto->titulo; ?></td>
 
-              <td><button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modalinfo" onClick= "<?php echo "selinfo('$punto->idpunto','$punto->titulo','$punto->descripcion','$punto->referencias','$punto->fecharegistro')";?>">infromación</button></td>
+              <td><button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modalinfo" onClick= "<?php echo "selinfo('$punto->idpunto','$punto->titulo','nl2br_except_pre($punto->descripcion)','nl2br($punto->referencias)','$punto->fecharegistro')";?>">infromación</button></td>
 
-              <td><button type="button" class="btn btn-primary btn-sm" onClick="<?php echo "selpunto('$punto->idpunto','$punto->cx','$punto->cy','$punto->descripcion')";?>"> ver</button</td>
+              <td><button type="button" class="btn btn-primary btn-sm" onClick="<?php echo "selpunto('$punto->idpunto','$punto->cx','$punto->cy')";?>"> ver</button</td>
 
               <td><button type="button" class="btn btn-warning btn-sm">Borrar</button></td>
 
@@ -382,13 +390,13 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Descrpcción</label>
                 <div class="col-sm-9"> 
-                  <input type="text" name="modal-descripcion" class="form-control" id="modal-descripcion" disabled="disabled">
+                  <textarea rows="5" name="modal-descripcion" class="form-control" id="modal-descripcion" disabled="disabled"></textarea>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Referencias</label>
                 <div class="col-sm-9"> 
-                  <input type="text" name="modal-referencias" class="form-control" id="modal-referencias" disabled="disabled">
+                  <textarea rows="5" name="modal-referencias" class="form-control" id="modal-referencias" disabled="disabled"></textarea>
                 </div>
             </div>
             <div class="form-group">
@@ -406,9 +414,10 @@
                 </div>
             </div>
             <!--Sliders-->
-      
+
 
             </div>
+            
       </form>
       </div>
 
