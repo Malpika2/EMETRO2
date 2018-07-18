@@ -307,6 +307,7 @@
             <tr>
               <td><?php echo $punto->titulo; ?></td>
 
+
               <td><button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modalinfo" onClick= "<?php echo "selinfo('$punto->idpunto','$punto->titulo','$punto->descripcion','$punto->referencias','$punto->fecharegistro')";?>">infromación</button></td>
 
               <td><button type="button" class="btn btn-primary btn-sm" onClick="<?php echo "selpunto('$punto->idpunto','$punto->cx','$punto->cy')";?>"> ver</button</td>
