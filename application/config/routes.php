@@ -56,3 +56,6 @@ $route['translate_uri_dashes'] = FALSE;
 $route['inspector']='inspector/login';
 $route['actualizar']='inicio/actualizar';
 
+$route['Administrador'] = 'admin/Administrador';
+$route['Administrador/Solicitud'] = 'admin/Solicitud';
+

@@ -15,4 +15,12 @@ class mUsuario extends CI_Model
 		$result = $r->result();
 		return $result;
 	}
+	public function getUsuarioSelf(){
+		$this->emetro_local->SELECT('*');
+		$this->emetro_local->FROM('usuario');
+		$this->emetro_local->where('usuario',$this->session->userdata('MM_Username'));
+		$r=$this->emetro_local->get();
+		$result = $r->row();
+		return $result;
+	}
 }
