@@ -3,6 +3,7 @@
 <head>
 <!--Estilos-->
   <style type="text/css">
+  
    #informacion
     {
       margin-left: 2em;
@@ -13,31 +14,35 @@
     }
     #map
     {
-      ;
+      
       width: 1000px;
       height: 600px;
       float:left;
     }
-    
+    #descripcion{
+  font-size: 16px; 
+  font-family: monospace; 
+  height: 15em; 
+  resize: none;
+  word-break: break-all;
+}
+   
   </style>
-  <!-- Bootstrap css-->
-  <!--<link href="<?php echo base_url(); ?>assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">-->
-  <!--datatable-->
+
   <link rel="stylesheet"  href="<?php echo base_url();?>assets/datatables/dataTables.bootstrap.css">
   
   <!-- Bootstrap js-->
   <script src="<?php echo base_url();?>assets/vendors/jquery/dist/jquery.min.js"></script>
-  <!--jquery-->
- <!-- <script src="<?php echo base_url();?>assets/bootstrap/js/bootstrap.min.js"></script>-->
-  <!-- Google Maps-->  
+ 
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCqBKjIObP2dJsSZCMNOSgj_Jy2BGG18DA&callback=initMap">
   </script>
+
   <!--Inicio-->
-   <script >    
+   <script >  
     var map;
     var marcadores_nuevos = [];
     var marcadores_db;
-    //var coord = $("#coords");
+
     //funcion para quitar masrcadores nuevos 
     function quitar_marcadores(lista)
     {
@@ -54,7 +59,7 @@
       var ubicacion = {lat: 17.060628, lng: -96.725366};
       map = new google.maps.Map(document.getElementById('map'), 
       {
-        zoom: 15,
+        zoom: 12,
         center: ubicacion,
         mapTypeId:'roadmap'
       });
@@ -94,9 +99,40 @@
       {        
         if($("#titulo").val()=="")
         {
-          alert("Ingrese un titulo al marcador nuevo...!!!!");
+          $("#titulo").focus().after("<span class='alert alert-danger titulo'><strong>Ingrese Titulo</strong></span>");
+          $("#titulo").mouseleave(function(){
+          $(".titulo").fadeOut(300);
+            });
           return false;
         }
+        if($("#descripcion").val()=="")
+        {
+          $("#descripcion").focus().after("<span class='alert alert-danger descripcion'><strong>Ingrese una Descripción</strong></span>");
+          $("#descripcion").mouseleave(function(){
+            $(".descripcion").fadeOut(300);
+
+          }); 
+          return false;
+        }
+        if($("#referencias").val()=="")
+        {
+          $("#referencias").focus().after("<span class='alert alert-danger referencias'><strong>Ingrese una Referencia del Lugar</strong></span>");
+          $("#referencias").mouseleave(function(){
+            $(".referencias").fadeOut(300);
+          });
+          return false;
+        }
+        if($("#cx").val()=="")
+        {
+          alert("falta marcar un punto dentro del mapa")
+          return false;
+        }
+        if($("#cy").val()=="")
+        {
+          alert("falta marcar un punto dentro del mapa");
+          return false;
+        }
+
         else
         {
           //se obtienen los datos del formulario y se asignana a las variables.
@@ -104,11 +140,22 @@
           var descripcion = $("#descripcion").val();
           var cx = $("#cx").val();
           var cy = $("#cy").val();
-          var imagen = $("#imagen").val();
+          var idsolicitud = $("#idsolicitud").val();
+          var referencias = $("#referencias").val();
+          var file_name = $("#file_name").val();
            $.ajax({
               type: 'POST',
               url: baseurl+"Inspector/cMapa/grabar_punto" ,
-              data:{titulo:titulo, descripcion, cx:cx, cy:cy, imagen},
+              data:
+              {
+                titulo:titulo, 
+                descripcion:descripcion, 
+                cx:cx, 
+                cy:cy, 
+                idsolicitud:idsolicitud,
+                referencias:referencias,
+                file_name:file_name
+              },
               success: function(data) 
               {
                 alert("El Marcador se guardo correctamente");
@@ -118,65 +165,30 @@
         }//fin else
   
       });//fin de la funcion del boton de grabar
-       
-       $("#btn_buscar").on("click", function()
-      {
-      $('#examplexx').html(
-    '   <tr>'+
-          '<th style="width: 1%">#Punto</th>'+
-          '<th style="width: 20%">Titulo</th>'+
-          '<th>Buscar</th>'+
-          '<th>Ver</th>'+
-          '<th>Eliminar</th>'+
-        '</tr>' 
-      );
-  // body...
-      $.post(baseurl+"Inspector/cMapa/ver_punto",
-      function(data)
-      {
-        var p = JSON.parse(data);
-        $.each(p, function(i, item)
-        {
-          $('#examplexx').append(
-            '<tr>'+
-            '<td></td>'+      
-              '<td>'+item.idpunto+'</td>'+
-              '<td>'+item.titulo+'</td>'+
-
-              '<td><button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modalinfo" onClick="selinfo(\''+item.idpunto+'\',\''+item.titulo+'\',\''+item.descripcion+'\',\''+item.cx+'\',\''+item.cy+'\');">infromación</button></td>'+
-
-              '<td><button type="button" class="btn btn-primary btn-sm" onClick="selpunto(\''+item.idpunto+'\',\''+item.cx+'\',\''+item.cy+'\');"> ver</button</td>'+
-              '<td><button type="button" class="btn btn-warning btn-sm">Borrar</button></td>'+
-            '<tr>'
-          );     
-        });//fin de tabla para mostrar datos
-        
-
-      });//fin de la función
-
-});//fin del boton de buscar todo
       
-
-
-
-//funcion para ver los marcadores+
-// var marcadores_db = [];
-  selpunto = function(idpunto, cx, cy) 
+    
+       
+  selpunto = function(idpunto, cx, cy, descripcion) 
      { 
-
- //alert(idpunto);
- //alert(cx);
- //alert(cy);
-      var posi = new google.maps.LatLng(cx, cy);
-      var marca = new google.maps.Marker
+       var infowindow = new google.maps.InfoWindow
         ({
-          idpunto:idpunto,
-          position:posi,
-          animation: google.maps.Animation.DROP
+          content:descripcion,
+          maxWidth: 200
         });
-        google.maps.event.addListener(marca,"click", function(event)
+ 
+        var posi = new google.maps.LatLng(cx, cy);
+     
+        var marca = new google.maps.Marker
+          ({
+            idpunto:idpunto,
+            position:posi,
+            animation: google.maps.Animation.DROP
+          });
+
+        google.maps.event.addListener(marca,"click", function()
         {
-          alert(marca.idpunto);
+
+          infowindow.open(map, marca);
         });
 
         marca.setMap(map);
@@ -184,123 +196,166 @@
 
      }
   //mostrar informacion del marcador
-  selinfo = function(idpunto, titulo, descripcion, cx, cy)
+  selinfo = function(idpunto, titulo, descripcion, referencias, fecharegistro)
   {
+
     $("#modal-idpunto").val(idpunto);
     $("#modal-titulo").val(titulo);
     $("#modal-descripcion").val(descripcion);
-    $("#modal-cx").val(cx);
-    $("#modal-cy").val(cy);
+    $("#modal-referencias").val(referencias);
+    $("#modal-fecha").val(fecharegistro);
   };
-                  
 
   }//fin de la fincion del mapa.
-
          
   </script>
-  <title>Marcadores</title>
+  <title></title>
   </head>
   <body>
 
   <div id="informacion">
-  <h2>Registro de puntos en Mapa</h2>
+  <h2>Mapa</h2>
     
 
 
-
+<!--Menu-->
 <p>
-  <a class="btn btn-primary" data-toggle="collapse" href="#multiCollapseExample1" aria-expanded="false" aria-controls="multiCollapseExample1">Agregar Nota</a>
-  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2">Mostrar</button>
-  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target=".multi-collapse" aria-expanded="false" aria-controls="multiCollapseExample1 multiCollapseExample2">......</button>
+  <a class="btn btn-info" data-toggle="collapse" href="#multiCollapseExample1" aria-expanded="true" aria-controls="multiCollapseExample1">Agregar Nota</a>
+
+  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#multiCollapseExample2" aria-expanded="true" aria-controls="multiCollapseExample2">Mostrar</button>
+
+   <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#multiCollapseExample3" aria-expanded="false" aria-controls="multiCollapseExample2">Fotos  </button>  
 </p>
+
 <div class="row">
   <div class="col">
     <div class="collapse multi-collapse" id="multiCollapseExample1">
       <div class="card card-body">
-         <form id="formulario" method="POST" enctype="multipart/form-data">
-      <table>
+
+      <form id="formulario" method="POST" enctype="multipart/form-data">
+      <table class="table" >
+  
+      
+
+          <input type="hidden" class="form-control" id="idsolicitud" name="idsolicitud" value="<?php echo $solicitud;?>" aria-describedby="emailHelp" placeholder="Titulo" >
+      
+
         <tr>
-          <td>Titulo</td>
           <td>
-          <input type="text" class="form-control" id="titulo" name="titulo" aria-describedby="emailHelp" placeholder="Titulo">
+        <label for="formGroupExampleInput">Titulo</label>  
+        </td>
+          <td colspan="12">
+          <input type="text" class="form-control" id="titulo" name="titulo" aria-describedby="emailHelp" placeholder="Titulo">        
+
           </td>
+        
         </tr>
         <tr>
-          <td>Descripcón</td>
+       
+          <td> <label for="formGroupExampleInput">Descripción</label>  </td>
           <td>
-           <input type="text" class="form-control" id="descripcion" name="descripcion" aria-describedby="emailHelp" placeholder="descripcion" required="required">
+           <textarea class="form-control" rows="2" id="descripcion" name="descripcion" required="required" placeholder="Descripción"></textarea>
               </td>
             </tr>
             <tr>
-              <td>Coordenada X: </td>
-              <td>
-                <input type="text" class="form-control" id="cx" name="cx" aria-describedby="emailHelp" placeholder="coordenada X " disabled="disabled" required="required">
+          <td> <label for="formGroupExampleInput">Referencias</label>  </td>
+          <td>          
+           <textarea class="form-control" rows="2" id="referencias" name="referencias" required="required" placeholder="Referencias" value=""></textarea>
               </td>
             </tr>
             <tr>
-              <td>Coordenada Y: </td>
+              <td> <label for="formGroupExampleInput">Fotos</label> </td>
               <td>
-                <input type="text" class="form-control" id="cy" name="cy" aria-describedby="emailHelp" placeholder="coordenada Y " disabled="disabled" required="required">                
+                <input class="form-control" type="file" name="file_name[]" id="file_name" required="required" multiple>
               </td>
             </tr>
-            <tr>
-              <td>Subir Foto: </td>
-              <td>
-               <label class="custom-file">
-                  <input type="file" id="imagen" name="imagen" class="custom-file-input" required="required">
-                  <span class="custom-file-control"></span>
-                </label>                
-              </td>
-
-            </tr>
+        
+           
+                <input type="hidden" class="form-control" id="cx" name="cx">
+                <input type="hidden" class="form-control" id="cy" name="cy"> <br/>
+         
         
 
             <tr>
               <td>
-                <button type="button" class="btn btn-success" id="btn_grabar">Guardar</button>
+                <button type="button" class="btn btn-info" id="btn_grabar">Guardar</button>
               </td>
               <td>
-                <button type="reset" class="btn btn-danger">Limpiar</button>
+                <button type="reset" class="btn btn-info">Limpiar</button>
 
               </td>
             </tr>
           </table>
         </form>
         <!--Fin de formulario-->    
+
       </div>
     </div>
   </div>
   <div class="col">
     <div class="collapse multi-collapse" id="multiCollapseExample2">
       <div class="card card-body">
-        <table id="examplexx" border="1">
-    
-          <tr>
-            <td></td>
-            <td>
-              ID
-            </td>
-            <td>
-              TITULO
-            </td>
-            <td>
-              bucar
-            </td>
-            <td>
-              Ver
-            </td>
-            <td>
-              eliminar
-            </td>
-          </tr>
+      <table class="display" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Titulo</th>
+                <th>Informacion</th>
+                <th>Borrar</th>                
+            </tr> 
+            <?php foreach($row_puntos as $punto){ ?>
 
-        </table>
-                <button type="button" class="btn btn-success" id="btn_buscar">Buscar</button>
-                <button type="button" class="btn btn-success" id="btn_ver">ver</button>
+            <tr>
+              <td><?php echo $punto->titulo; ?></td>
+
+              <td><button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modalinfo" onClick= "<?php echo "selinfo('$punto->idpunto','$punto->titulo','nl2br_except_pre($punto->descripcion)','nl2br($punto->referencias)','$punto->fecharegistro')";?>">infromación</button></td>
+
+              <td><button type="button" class="btn btn-primary btn-sm" onClick="<?php echo "selpunto('$punto->idpunto','$punto->cx','$punto->cy')";?>"> ver</button</td>
+
+              <td><button type="button" class="btn btn-warning btn-sm">Borrar</button></td>
+
+            </tr>
+        <?php  } ?>
+        </thead>
+      </table>
+     
 
       </div>
     </div>
   </div>
+
+    <div class="col">
+    <div class="collapse multi-collapse" id="multiCollapseExample3">
+      <div class="card card-body">
+        <div class="form-group">
+         
+<form enctype="multipart/form-data" action="<?php echo base_url();?>Inspector/cMapa/guardar_fotos" method="post" id="fotos">
+            <div class="form-group">
+              <input type="text" class="form-control" id="idsolicitud" name="idsolicitud" value="<?php echo $solicitud;?>" aria-describedby="emailHelp" placeholder="Titulo" >
+                <label for="exampleFormControlSelect1">Titulo</label>
+
+                      <select class="form-control" id="idpunto" name="idpunto">
+                        <?php foreach ($row_puntos as $punto) {?>
+                      <option > <?php echo $punto->idpunto;  }?></option><br/>
+                      </select>
+              
+            </div>
+            <div class="form-group">
+
+                <label>Fotos</label>
+                <input type="file" class="form-control" name="userFiles[]" multiple/>
+            </div>
+            <div class="form-group">
+                <input class="form-control" type="submit" name="fileSubmit" value="UPLOAD" id="reset1"/>
+            </div>
+        </form>
+
+
+        
+
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!--Inicia Formulario del Modal para mostrar la informacion de los marcadores-->
@@ -316,8 +371,7 @@
       <div class="modal-body">
         <form class="form-horizontal">
           <!-- parametros ocultos -->
-          <input type="hidden" id="idproductor">
-          
+         
       <div class="box-body">
             <div class="form-group">
                 <label class="col-sm-3 control-label">N° de Marcador</label>
@@ -336,24 +390,34 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Descrpcción</label>
                 <div class="col-sm-9"> 
-                  <input type="text" name="modal-descripcion" class="form-control" id="modal-descripcion" disabled="disabled">
+                  <textarea rows="5" name="modal-descripcion" class="form-control" id="modal-descripcion" disabled="disabled"></textarea>
                 </div>
             </div>
-
             <div class="form-group">
-                <label class="col-sm-3 control-label">Coordenada X</label>
+                <label class="col-sm-3 control-label">Referencias</label>
                 <div class="col-sm-9"> 
-                  <input type="text" name="modal-cx" class="form-control" id="modal-cx" disabled="disabled">
+                  <textarea rows="5" name="modal-referencias" class="form-control" id="modal-referencias" disabled="disabled"></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Fecha de registro</label>
+                <div class="col-sm-9"> 
+                  <input type="text" name="modal-fecha" class="form-control" id="modal-fecha" disabled="disabled">
                 </div>
             </div>
              <div class="form-group">
-                <label class="col-sm-3 control-label">Coordenada Y</label>
-                <div class="col-sm-9"> 
-                  <input type="text" name="modal-cy" class="form-control" id="modal-cy" disabled="disabled">
+        
+            <div class="col-sm-9"> 
+                  <?php foreach($row_fotos as $foto) {?>
+            <img src="<?php echo base_url('fotos/'. $foto->file_name); ?>" width="20" height="20">
+                  <?php } ?>
                 </div>
             </div>
+            <!--Sliders-->
+
 
             </div>
+            
       </form>
       </div>
 
@@ -364,11 +428,12 @@
   </div>
 </div>
   <div id="map"></div>
+  <div>
 
-
-
-
-
+  
+      
+ 
+  </div>
 </body>
 </html>
 <script src="<?php echo base_url();?>assets/datatables/jquery.dataTables.min.js"></script>
@@ -377,94 +442,7 @@
 <script src="<?php echo base_url();?>assets/datatables/dataTables.bootstrap.min.js"></script>
 
 
-<script>
- $(document).ready(function() {
-    var t = $('#examplexx').DataTable({
-          $("#btn_buscar").on("click", function()
-      {
-      $('#examplexx').html(
-    '   <tr>'+
-          '<th style="width: 1%">#Punto</th>'+
-          '<th style="width: 20%">Titulo</th>'+
-          '<th>Buscar</th>'+
-          '<th>Ver</th>'+
-          '<th>Eliminar</th>'+
-        '</tr>' 
-      );
-  // body...
-      $.post(baseurl+"Inspector/cMapa/ver_punto",
-      function(data)
-      {
-        var p = JSON.parse(data);
-        $.each(p, function(i, item)
-        {
-          $('#examplexx').append(
-            '<tr>'+
-            '<td></td>'
-              '<td>'+item.idpunto+'</td>'+
-              '<td>'+item.titulo+'</td>'+
 
-              '<td><button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modalinfo" onClick="selinfo(\''+item.idpunto+'\',\''+item.titulo+'\',\''+item.descripcion+'\',\''+item.cx+'\',\''+item.cy+'\');">infromación</button></td>'+
-
-              '<td><button type="button" class="btn btn-primary btn-sm" onClick="selpunto(\''+item.idpunto+'\',\''+item.cx+'\',\''+item.cy+'\');"> ver</button</td>'+
-              '<td><button type="button" class="btn btn-warning btn-sm">Borrar</button></td>'+
-            '<tr>'
-          );     
-        });//fin de tabla para mostrar datos
-        
-
-      });//fin de la función
-
-});//fin del boton de buscar todo
-  
-  
-   "pagingType": "full_numbers",
-      "paging": true,
-      "lengthChange": false,
-      "searching": true,
-      "ordering": false,
-        
-    "iDisplayLength": 20,
-     "columnDefs": [ {
-            "searchable": false,
-            "orderable": false,
-            "targets": 0
-        } ],
-        "order": [[ 1, 'asc' ]],
-    //"scrollY": "700px",
-  oLanguage: {
-            "sProcessing":     "Procesando...",
-            "sLengthMenu":     "Mostrar MENU registros",
-            "sZeroRecords":    "No se encontraron resultados",
-            "sEmptyTable":     "Ningún dato disponible en esta tabla",
-            "sInfo":           "Mostrando  START a END de MAX registros",
-            "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
-            "sInfoFiltered":   "(filtrado de un total de MAX registros)",
-            "sInfoPostFix":    "",
-            "sSearch":         "B  U  S  C  A  R:",
-            "sUrl":            "",
-            "sInfoThousands":  ",",
-            "sLoadingRecords": "Cargando...",
-            "oPaginate": {
-            "sFirst":    "Primero",
-            "sLast":     "Último",
-            "sNext":     "Siguiente",
-            "sPrevious": "Anterior"
-  
-            }
-   
-   }
-       });
- 
-     t.on( 'order.dt search.dt', function () {
-        t.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
-            cell.innerHTML = i+1;
-        } );
-    } ).draw();
- 
- 
-  });
-</script>
 <script type="text/javascript">
 var baseurl = "<?php echo base_url(); ?>";
 </script>
