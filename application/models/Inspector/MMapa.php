@@ -24,7 +24,6 @@ class mMapa extends CI_Model
 
 
 		return $this->db->insert_id();
-<<<<<<< HEAD
 	}
 
 	public function guardar_imagen($param)
@@ -44,28 +43,6 @@ class mMapa extends CI_Model
 	{
 		$this->db->select('*');
 		$this->db->from('mapa');
-=======
-	}
-
-	public function guardar_imagen($param)
-	{
-		 $arrayCampos = array(
-		 	'idpunto' => $param['idpunto'],
-		 	'file_name' => $param['file_name'],
-		 	'idsolicitud' => $param['idsolicitud'],
-		);
-		$this->db->set('fecharegistro', 'NOW()', FALSE);
-		$this->db->insert('fotos',$arrayCampos); 
-	}
-
-	
-
-	public function ver_punto($param)
-	{
-		$this->db->select("*");
-		$this->db->from("mapa ");
-	
->>>>>>> 9408912359bf324098f068ea279f41fe6d763797
 		$this->db->where("idsolicitud", $param['solicitud']);			
 
 		$r = $this->db->get();
