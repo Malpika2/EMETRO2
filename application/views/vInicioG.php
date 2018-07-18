@@ -111,7 +111,7 @@
 <p class="lead">Selecciona un tipo de usuario para iniciar sesi&oacute;n</p>
       <ul>
       <li>
-      <h3><a href="admin/">Administrador</a></h3>
+      <h3><a href="Administrador/">Administrador</a></h3>
       </li>
       <?php /*<li><h3><a href="#">Operador</a></h3></li>*/?>
       <li><h3><a href="inspector/">Inspector</a></h3></li>
